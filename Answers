@@ -1,0 +1,112 @@
+USE world;
+
+-- 1
+SELECT COUNT(ID) FROM(city) WHERE countrycode=("USA");
+
+-- 2
+CREATE VIEW Pop_Life
+AS SELECT population, lifeexpectancy
+FROM country
+WHERE name="Argentina";
+SELECT * FROM Pop_life;
+
+-- 3
+SELECT name, lifeexpectancy
+FROM country
+WHERE lifeexpectancy=(
+    SELECT MAX(lifeexpectancy) 
+	FROM(country) 
+	ORDER BY lifeexpectancy
+);
+
+-- 4
+SELECT co.name, ci.name, ci.population 
+FROM country co
+JOIN city ci ON co.code=ci.countrycode
+WHERE co.name="SPAIN" ORDER BY ci.population DESC LIMIT 1;
+
+-- 5
+SELECT co.region, co.name, l.language
+FROM country co
+JOIN countrylanguage l ON co.code=l.countrycode
+WHERE co.region="Southeast Asia";
+
+-- 6
+SELECT * FROM city WHERE name LIKE 'F%' LIMIT 25;
+
+-- 7
+SELECT co.name, COUNT(ci.name)
+FROM country co
+JOIN city ci ON co.code=ci.countrycode
+WHERE co.name="China";
+
+-- 8
+SELECT name, population
+FROM country
+WHERE population=(
+    SELECT MIN(population) 
+	FROM(country)
+    WHERE population>0
+	ORDER BY population LIMIT 1
+);
+
+-- 9
+SELECT COUNT(CODE) FROM country;
+
+-- 10
+SELECT * FROM country ORDER BY surfacearea DESC LIMIT 10;
+
+-- 11
+SELECT * FROM city WHERE countrycode="JPN" ORDER BY population DESC LIMIT 5;
+
+-- 12
+UPDATE country SET HeadOfState="Elizabeth II" WHERE HeadOfState="Elisabeth II";
+SELECT code from country WHERE headofstate="Elizabeth II";
+
+-- 13
+SELECT *
+FROM (
+	SELECT Name, Population, SurfaceArea, (Population/SurfaceArea) AS Ratio
+    FROM country
+    WHERE Population IS NOT NULL
+    AND Population!=0
+) AS PopulationToAreaRatio
+ORDER BY Ratio
+LIMIT 10;
+
+-- 14
+SELECT DISTINCT Language FROM CountryLanguage;
+
+-- 15
+SELECT name, GNP FROM country ORDER BY GNP DESC LIMIT 10;
+
+-- 16
+SELECT DISTINCT language, COUNT(language) AS Frequency FROM countrylanguage
+GROUP BY language
+ORDER BY Frequency DESC LIMIT 10;
+
+-- 17
+SELECT co.name, l.language, l.percentage
+FROM country co
+JOIN countrylanguage l ON co.code=l.countrycode
+WHERE language="German" AND percentage>50;
+
+-- 18
+SELECT name, lifeexpectancy
+FROM country
+WHERE lifeexpectancy IS NOT NULL
+AND lifeexpectancy=(
+	SELECT MIN(lifeexpectancy)
+    FROM country
+);
+
+-- 19 
+SELECT governmentform FROM country  GROUP BY governmentform ORDER BY COUNT(governmentform) DESC LIMIT 3;
+
+-- 20
+SELECT name, indepyear
+FROM country
+WHERE indepyear IS NOT NULL
+;
+
+SET SQL_SAFE_UPDATES=0;

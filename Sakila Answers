@@ -1,0 +1,115 @@
+USE sakila;
+
+-- 1
+SELECT first_name, last_name FROM actor;
+
+-- 2
+SELECT last_name FROM actor WHERE first_name="John";
+
+-- 3
+SELECT first_name, last_name FROM actor WHERE last_name="Neeson";
+
+-- 4
+SELECT actor_id, first_name, last_name FROM actor WHERE actor_id % 10= 0;
+
+-- 5
+SELECT description FROM film_text WHERE film_id="100";
+
+-- 6
+SELECT title, rating FROM film WHERE rating = "R";
+
+-- 7
+SELECT title, rating FROM film WHERE NOT rating = "R";
+
+-- 8
+SELECT title, length FROM film ORDER BY length LIMIT 10;
+
+-- 9
+SELECT title, length
+FROM film
+WHERE length=(
+    SELECT MAX(length) 
+	FROM(film) 
+	ORDER BY length
+);
+
+-- 10
+SELECT title FROM film WHERE special_features = "Deleted Scenes";
+
+-- 11
+SELECT last_name
+FROM actor
+GROUP BY last_name
+HAVING COUNT(last_name) = 1
+ORDER BY last_name DESC; 
+
+-- 12
+SELECT last_name
+FROM actor
+GROUP BY last_name
+HAVING COUNT(last_name) > 1
+ORDER BY last_name DESC;
+
+-- 13
+SELECT actor_id,
+	COUNT(film_id) AS num_films
+	FROM film_actor
+    GROUP BY actor_id
+    ORDER BY num_films DESC LIMIT 1;
+
+-- 14 
+SELECT DATE_ADD(r.rental_date, INTERVAL f.rental_duration DAY) AS Due_date, f.film_id
+FROM rental r
+JOIN film f ON f.film_id=r.rental_id
+WHERE f.film_id ="1";
+
+-- 15
+SELECT AVG(length) FROM film;
+
+-- 16
+SELECT AVG(f.length) AS avglength, c.category_id
+FROM film f
+JOIN film_category c ON c.film_id=f.film_id
+GROUP BY category_id;
+
+-- 17
+SELECT * FROM film
+WHERE description LIKE "%robot%";
+
+-- 18
+SELECT COUNT(release_year) FROM film WHERE release_year="2010";
+
+-- 19
+SELECT f.title, fc.category_id, c.name
+FROM film f
+JOIN film_category fc ON fc.film_id=f.film_id
+JOIN category c ON c.category_id=fc.category_id
+WHERE c.name ="Horror";
+
+-- 20
+SELECT first_name, last_name, staff_id FROM staff
+WHERE staff_id = "2";
+
+-- 21
+SELECT f.title
+FROM actor a
+JOIN film_actor fa ON a.actor_id = fa.actor_id
+JOIN film f ON f.film_id = fa.film_id
+WHERE last_name="Costner";
+
+-- 22
+SELECT COUNT(DISTINCT country) AS Distinct_countries FROM country;
+
+-- 23
+SELECT name FROM language ORDER BY name DESC;
+
+--  24 
+SELECT first_name, last_name FROM actor WHERE last_name LIKE "%son" ORDER BY first_name;
+
+-- 25
+SELECT c.name,
+	COUNT(fc.film_id) AS num_films
+	FROM category c
+    JOIN film_category fc ON fc.category_id=c.category_id
+    GROUP BY c.name
+    ORDER BY num_films DESC LIMIT 1;
